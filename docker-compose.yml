@@ -1,0 +1,58 @@
+version: '0.1'
+
+x-default-logging: &logging
+  driver: "json-file"
+  options:
+    max-size: "5m"
+    max-file: "2"
+
+networks:
+  default:
+    name: opentelemetry-demo
+    driver: bridge
+
+services:
+
+
+  # ********************
+  # Telemetry Components
+  # ********************
+
+
+  # OpenTelemetry Collector
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.61.0
+    container_name: graphql-demo-otel-col
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+    restart: always
+    command: [ "--config=/etc/otelcol-config.yml" ]
+    volumes:
+      - ./otelcollector/otelcol-config.yml:/etc/otelcol-config.yml
+    ports:
+      - "4317"          # OTLP over gRPC receiver
+      - "4318:4318"     # OTLP over HTTP receiver
+      - "9464"          # Prometheus exporter
+      - "8888"          # metrics endpoint
+    depends_on:
+      - jaeger
+    logging: *logging
+
+  # Jaeger
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: graphql-demo-jaeger
+    command: ["--memory.max-traces", "10000", "--query.base-path", "/jaeger/ui"]
+    deploy:
+      resources:
+        limits:
+          memory: 275M
+    restart: always
+    ports:
+      - "59862"                    # Jaeger UI
+      - "4317"                           # OTLP gRPC default port
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    logging: *logging
