@@ -1,4 +1,4 @@
-# graphl-opentelemetry-demo
+# GraphQL & OpenTelemetry
 
 Demo application for GraphQL and OpenTelemetry
 
@@ -11,6 +11,9 @@ Start the containers (OTel collector, Jaeger):
 docker compose up
 ```
 
+Jaeger UI: http://localhost:59862/
+
+
 Start the react app (front-end):
 
 ```
@@ -18,5 +21,7 @@ cd ./frontend/last-minute-deals
 npm start
 ```
 
-## Links
+The app runs on: http://localhost:3000/
+
+
 
