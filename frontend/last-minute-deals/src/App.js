@@ -1,31 +1,33 @@
 // Import everything needed to use the `useQuery` hook
 import { useQuery, gql } from '@apollo/client';
 
-const GET_LOCATIONS = gql`
-  query GetLocations {
-    locations {
-      id
-      name
-      description
-      photo
-    }
+
+
+const GET_COUNTRY = gql`
+  
+ query GetCountries {
+  countries {
+    name
+capital
+emoji
   }
+}
 `;
 
 
-function DisplayLocations() {
-  const { loading, error, data } = useQuery(GET_LOCATIONS);
+function DisplayCountry() {
+  const { loading, error, data } = useQuery(GET_COUNTRY);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  return data.locations.map(({ id, name, description, photo }) => (
-    <div key={id}>
-      <h3>{name}</h3>
-      <img width="400" height="250" alt="location-reference" src={`${photo}`} />
-      <br />
-      <b>About this location:</b>
-      <p>{description}</p>
+  return data.countries.map(({ name, capital, emoji }) => (
+    <div key="{code}">
+      <h3>{emoji} {name}</h3>
+      <p>
+      <b>Capital: </b>
+      {capital}
+      </p>
       <br />
     </div>
   ));
@@ -35,9 +37,9 @@ function DisplayLocations() {
 export default function App() {
   return (
     <div>
-      <h2>My first Apollo app 🚀</h2>
+      <h2>Last-Minute Deals 🏖️</h2>
       <br/>
-      <DisplayLocations />
+      <DisplayCountry />
     </div>
   );
 }
