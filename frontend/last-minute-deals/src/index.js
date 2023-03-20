@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+import './tracer.js';
 
 const client = new ApolloClient({
   uri: 'https://countries.trevorblades.com/',
