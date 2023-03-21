@@ -4,10 +4,11 @@ import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-docu
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-user-interaction';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
-import { ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { Resource } from '@opentelemetry/resources';
 import { OTLPTraceExporter  } from "@opentelemetry/exporter-trace-otlp-http";
+const { getWebAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-web');
 
 
 const collectorOptions = {
@@ -33,7 +34,7 @@ const exporter = new OTLPTraceExporter (collectorOptions);
 
 // Instrumentation configurations for frontend
 const fetchInstrumentation = new FetchInstrumentation({
-    ignoreUrls : ["https://some-ignored-url.com"]
+    // ignoreUrls : ["https://some-ignored-url.com"]
   });
   
   fetchInstrumentation.setTracerProvider(provider);
@@ -44,10 +45,17 @@ const fetchInstrumentation = new FetchInstrumentation({
     contextManager: new ZoneContextManager(),
   });
   
-  // Registering instrumentations
-  registerInstrumentations({
-      instrumentations: [new FetchInstrumentation()],
-  });
-  
 
+
+
+registerInstrumentations({
+  instrumentations: [
+    getWebAutoInstrumentations({
+      // load custom configuration for xml-http-request instrumentation
+      '@opentelemetry/instrumentation-xml-http-request': {
+        clearTimingResources: true,
+      },
+    }),
+  ],
+});
 

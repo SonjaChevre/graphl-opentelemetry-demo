@@ -51,8 +51,15 @@ services:
           memory: 275M
     restart: always
     ports:
-      - "59862"                    # Jaeger UI
+      - "16686:16686"                    # Jaeger UI
       - "4317"                           # OTLP gRPC default port
     environment:
       - COLLECTOR_OTLP_ENABLED=true
     logging: *logging
+
+  k6:
+    image: grafana/k6:latest
+    ports:
+      - "6565:6565"
+    volumes:
+      - ./k6/:/scripts
