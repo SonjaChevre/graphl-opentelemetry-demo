@@ -25,7 +25,7 @@ const collectorOptions = {
 // Trace provider (Main aplication trace)
 const provider = new WebTracerProvider({
     resource: new Resource({
-      "service.name": "Frontend",
+      "service.name": "frontend",
     }
     )});
 
@@ -50,12 +50,7 @@ const fetchInstrumentation = new FetchInstrumentation({
 
 registerInstrumentations({
   instrumentations: [
-    getWebAutoInstrumentations({
-      // load custom configuration for xml-http-request instrumentation
-      '@opentelemetry/instrumentation-xml-http-request': {
-        clearTimingResources: true,
-      },
-    }),
-  ],
+    new FetchInstrumentation()
+    ]
 });
 
