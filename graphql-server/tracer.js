@@ -6,6 +6,20 @@ const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
 const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
 const { Resource } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
+const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node'); 
+
+
+// Receiving service
+const { context, propagation, trace } = require('@opentelemetry/api');
+
+// Assume "input" is an object with 'traceparent' & 'tracestate' keys
+const input = {};
+
+// Extracts the 'traceparent' and 'tracestate' data into a context object.
+//
+// You can then treat this context as the active context for your
+// traces.
+let activeContext = propagation.extract(context.active(), input);
 
 
 const sdk = new opentelemetry.NodeSDK({
@@ -15,6 +29,7 @@ const sdk = new opentelemetry.NodeSDK({
     headers: {},
   }),
   instrumentations: [
+     new getNodeAutoInstrumentations(),
       new GraphQLInstrumentation({
         // allowAttributes: true,
         // depth: 2,

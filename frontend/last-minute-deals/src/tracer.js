@@ -8,6 +8,12 @@ import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { Resource } from '@opentelemetry/resources';
 import { OTLPTraceExporter  } from "@opentelemetry/exporter-trace-otlp-http";
+import {
+  CompositePropagator,
+  W3CBaggagePropagator,
+  W3CTraceContextPropagator,
+} from '@opentelemetry/core';
+
 const { getWebAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-web');
 
 
@@ -48,9 +54,30 @@ const fetchInstrumentation = new FetchInstrumentation({
 
 
 
-registerInstrumentations({
-  instrumentations: [
-    new FetchInstrumentation()
-    ]
-});
+  registerInstrumentations({
+    instrumentations: [
+      new XMLHttpRequestInstrumentation({
+        propagateTraceHeaderCorsUrls: [
+           /.+/g, //Regex to match your backend urls. This should be updated.
+        ]
+      }),
+      new FetchInstrumentation({
+        propagateTraceHeaderCorsUrls: [
+           /.+/g, //Regex to match your backend urls. This should be updated.
+        ]
+      }),
+    ],
+  });
 
+  
+const contextManager = new ZoneContextManager();
+
+provider.register({
+  contextManager,
+  propagator: new CompositePropagator({
+    propagators: [
+      new W3CBaggagePropagator(),
+      new W3CTraceContextPropagator(),
+    ],
+  }),
+});
