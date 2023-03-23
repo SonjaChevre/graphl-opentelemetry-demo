@@ -24,11 +24,7 @@ npm start
 The app runs on: http://localhost:3000/
 
 
-Add load with K6:
 
-```
- docker compose run  k6 run /scripts/load.js
-```
 
 
 ## Todo
