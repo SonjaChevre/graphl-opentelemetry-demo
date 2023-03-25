@@ -29,7 +29,6 @@ const sdk = new opentelemetry.NodeSDK({
     headers: {},
   }),
   instrumentations: [
-     new getNodeAutoInstrumentations(),
       new GraphQLInstrumentation({
         // allowAttributes: true,
         // depth: 2,
