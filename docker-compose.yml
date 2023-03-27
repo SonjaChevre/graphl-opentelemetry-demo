@@ -56,10 +56,3 @@ services:
     environment:
       - COLLECTOR_OTLP_ENABLED=true
     logging: *logging
-
-  k6:
-    image: grafana/k6:latest
-    ports:
-      - "6565:6565"
-    volumes:
-      - ./k6/:/scripts

@@ -30,7 +30,6 @@ The app runs on: http://localhost:3000/
 ## Todo
 
 * Dockerize the react app (see https://jsramblings.com/dockerizing-a-react-app/) so that everything can be started from Docker
-* Add K6 for continuous load (or maybe selenium to simular users on the client side)
 * Improve OpenTelemetry instrumentation with GraphQL specific instrumentation
 * Add prometheus and grafana for monitoring
 * Enhance GraphQL queries, add a GraphQL server (include Tyk)
