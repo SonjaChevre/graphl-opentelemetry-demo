@@ -13,6 +13,15 @@ networks:
 
 services:
 
+  # ********************
+  # Demo services
+  # ********************
+
+  nodejs:
+    image: nodejs-photos
+    ports:
+      - "3001:3001"
+
 
   # ********************
   # Telemetry Components
