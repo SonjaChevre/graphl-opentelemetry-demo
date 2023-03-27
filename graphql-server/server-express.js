@@ -7,7 +7,7 @@ const axios = require('axios');
 const cors = require('cors');
 
 
-// Define our GraphQL schema
+// Define the schema
 const schema = buildSchema(`
   type Photo {
     id: ID!
@@ -17,29 +17,56 @@ const schema = buildSchema(`
     height: Int
   }
 
+  type Country {
+    name: String
+    code: String
+    photos: [Photo]
+  }
+
   type Query {
-    searchPhotos(query: String!): [Photo]
+    getCountries: [Country]
   }
 `);
 
-// Define the root resolver for our GraphQL API
+// Define the root resolver
 const root = {
-  searchPhotos: async ({ query }) => {
-    const response = await axios.get(`https://api.pexels.com/v1/search?query=${query}&per_page=10`, {
-      headers: {
-        Authorization: process.env.AUTH_TOKEN,
-      },
+  getCountries: async () => {
+    const response = await axios.post('https://countries.trevorblades.com/graphql', {
+      query: `
+        query {
+          countries {
+            name
+            code
+          }
+        }
+      `
     });
 
-    return response.data.photos.map((photo) => ({
-      id: photo.id,
-      photographer: photo.photographer,
-      src: photo.src.medium,
-      width: photo.width,
-      height: photo.height,
+    const countries = response.data.data.countries;
+
+    return countries.map(async country => ({
+      name: country.name,
+      code: country.code,
+      photos: async () => {
+        const pexelsResponse = await axios.get(`https://api.pexels.com/v1/search?query=${country.name}&per_page=10&page=1`, {
+          headers: {
+            Authorization: process.env.AUTH_TOKEN
+          }
+        });
+
+        return pexelsResponse.data.photos.map(photo => ({
+          id: photo.id,
+          photographer: photo.photographer,
+          src: photo.src.medium,
+          width: photo.width,
+          height: photo.height
+        }));
+      }
     }));
-  },
+  }
 };
+
+
 
 // Create an Express app
 const app = express();
@@ -59,3 +86,5 @@ app.use(
 app.listen(4000, () => {
   console.log('GraphQL server running on http://localhost:4000/graphql');
 });
+
+
