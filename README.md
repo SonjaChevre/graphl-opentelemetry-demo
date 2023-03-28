@@ -3,9 +3,27 @@
 Demo application for GraphQL and OpenTelemetry
 
 
+## Build the containers
+
+Photos rest API:
+
+```
+cd ./photos 
+docker build --tag nodejs-photos .
+```
+
+GraphQL server:
+
+```
+cd ./graphql-server 
+docker build --tag nodejs-graphql .
+```
+
+
+
 ## Run it
 
-Start the containers (OTel collector, Jaeger):
+Start the containers (OTel collector, Jaeger, nodejs-photos):
 
 ```
 docker compose up
@@ -32,6 +50,7 @@ npm start
 ```
 
 The app runs on: http://localhost:3000/
+Photo REST API runs on http://localhost:3001/, example: http://localhost:3001/pictures/UK
 
 
 

@@ -17,10 +17,16 @@ services:
   # Demo services
   # ********************
 
-  nodejs:
+  photos:
     image: nodejs-photos
     ports:
       - "3001:3001"
+
+  graphql:
+    image: nodejs-graphql
+    ports:
+      - "4000:4000"
+
 
 
   # ********************

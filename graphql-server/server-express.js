@@ -53,7 +53,7 @@ const root = {
       currency: country.currency,
       capital: country.capital,
       photos: async () => {
-        const photoResponse = await axios.get(`http://localhost:3001/pictures/${country.code}`);
+        const photoResponse = await axios.get(`http://host.docker.internal:3001/pictures/${country.code}`);
 
         return photoResponse.data.photos.map(photo => ({
           id: photo.id,
@@ -84,7 +84,7 @@ const root = {
   
       const country = response.data.data.country;
   
-      const photoResponse = await axios.get(`http://localhost:3001/pictures/${code}`);
+      const photoResponse = await axios.get(`http://host.docker.internal:3001/pictures/${code}`);
       const photos = photoResponse.data.photos.map(photo => ({
         id: photo.id,
         country: photo.country,
