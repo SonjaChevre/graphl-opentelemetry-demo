@@ -13,6 +13,30 @@ networks:
 
 services:
 
+  # ********************
+  # Demo services
+  # ********************
+
+  photos:
+    image: nodejs-photos
+    build: ./photos 
+    ports:
+      - "3001:3001"
+
+  graphql:
+    image: nodejs-graphql
+    build: ./graphql-server 
+    ports:
+      - "4000:4000"
+
+
+  frontend:
+    image: nodejs-react
+    build: ./frontend/last-minute-deals
+    ports:
+      - "3000:3000"
+
+
 
   # ********************
   # Telemetry Components
@@ -56,10 +80,3 @@ services:
     environment:
       - COLLECTOR_OTLP_ENABLED=true
     logging: *logging
-
-  k6:
-    image: grafana/k6:latest
-    ports:
-      - "6565:6565"
-    volumes:
-      - ./k6/:/scripts

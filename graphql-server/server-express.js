@@ -6,39 +6,108 @@ const { buildSchema } = require('graphql');
 const axios = require('axios');
 const cors = require('cors');
 
-
-// Define our GraphQL schema
+// Define the schema
 const schema = buildSchema(`
   type Photo {
     id: ID!
-    photographer: String
+    country: ID
     src: String
-    width: Int
-    height: Int
+    title: String
+  }
+
+  type Country {
+    name: String
+    code: ID!
+    capital: String
+    currency: String
+    photos: [Photo]
   }
 
   type Query {
-    searchPhotos(query: String!): [Photo]
+    getCountries: [Country]
+    getCountry(code: ID!): Country
   }
 `);
 
-// Define the root resolver for our GraphQL API
+// Define the root resolver
 const root = {
-  searchPhotos: async ({ query }) => {
-    const response = await axios.get(`https://api.pexels.com/v1/search?query=${query}&per_page=10`, {
-      headers: {
-        Authorization: process.env.AUTH_TOKEN,
-      },
+  getCountries: async () => {
+    const response = await axios.post('https://countries.trevorblades.com/graphql', {
+      query: `
+        query {
+          countries {
+            name
+            code
+            capital
+            currency
+          }
+        }
+      `
     });
 
-    return response.data.photos.map((photo) => ({
-      id: photo.id,
-      photographer: photo.photographer,
-      src: photo.src.medium,
-      width: photo.width,
-      height: photo.height,
+    const countries = response.data.data.countries;
+
+    return countries.map(async country => ({
+      name: country.name,
+      code: country.code,
+      currency: country.currency,
+      capital: country.capital,
+      photos: async () => {
+        const photoResponse = await axios.get(`http://host.docker.internal:3001/pictures/${country.code}`);
+
+        return photoResponse.data.photos.map(photo => ({
+          id: photo.id,
+          country: photo.country,
+          src: photo.src,
+          title: photo.title
+        }));
+      }
     }));
   },
+  getCountry: async ({ code }) => {
+    try {
+      const response = await axios.post('https://countries.trevorblades.com/graphql', {
+        query: `
+          query($code: ID!) {
+            country(code: $code) {
+              name
+              code
+              capital
+              currency
+            }
+          }
+        `,
+        variables: {
+          code
+        }
+      });
+  
+      const country = response.data.data.country;
+  
+      const photoResponse = await axios.get(`http://host.docker.internal:3001/pictures/${code}`);
+      const photos = photoResponse.data.photos.map(photo => ({
+        id: photo.id,
+        country: photo.country,
+        src: photo.src,
+        title: photo.title
+      }));
+  
+      return {
+        name: country.name,
+        code: country.code,
+        capital: country.capital,
+        currency: country.currency,
+        photos
+      };
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+      if (error.response) {
+        console.error(`GraphQL Error: ${error.response.data.errors[0].message}`);
+      }
+      return null;
+    }
+  }
+  
 };
 
 // Create an Express app
