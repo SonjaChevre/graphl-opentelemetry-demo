@@ -24,7 +24,7 @@ let activeContext = propagation.extract(context.active(), input);
 
 const sdk = new opentelemetry.NodeSDK({
   traceExporter: new OTLPTraceExporter({
-    url: "http://localhost:4318/v1/traces",
+    url: "http://host.docker.internal:4318/v1/traces",
     // optional - collection of custom headers to be sent with each request, empty by default
     headers: {},
   }),

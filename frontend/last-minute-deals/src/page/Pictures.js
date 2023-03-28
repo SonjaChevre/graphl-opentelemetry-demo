@@ -1,32 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 
-export const GET_PHOTOS = gql`
-  query {
-    searchPhotos(query: "nature") {
-      id
-      photographer
-      src
-      width
-      height
+const GET_PHOTOS = gql`
+  query GetPhotos($code: ID!) {
+    getCountry(code: $code) {
+      name
+      code
+      photos {
+        src
+        country
+      }
     }
   }
 `;
 
 function Pictures() {
-  const { loading, error, data } = useQuery(GET_PHOTOS);
+  const [selectedCountry, setSelectedCountry] = useState('CH');
+  const { loading, error, data } = useQuery(GET_PHOTOS, {
+    variables: { code: selectedCountry },
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   return (
     <div>
-      {data.searchPhotos.map(photo => (
-        <div key={photo.id}>
-          <img src={photo.src} alt={photo.photographer} />
-          <p>Photographer: {photo.photographer}</p>
-          <p>Width: {photo.width}</p>
-          <p>Height: {photo.height}</p>
+      <nav>
+        <ul>
+          <li>
+            <a href="#" onClick={() => setSelectedCountry('CH')}>
+              Switzerland
+            </a>
+          </li>
+          <li>
+            <a href="#" onClick={() => setSelectedCountry('UK')}>
+              United Kingdom
+            </a>
+          </li>
+          <li>
+            <a href="#" onClick={() => setSelectedCountry('NL')}>
+              Netherlands
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <h1>Photos from {data.getCountry.name}</h1>
+      {data.getCountry.photos.map(photo => (
+        <div key={photo.src}>
+          <img src={`http://localhost:3001${photo.src}`} alt={photo.country} />
+          <p>Country: {data.getCountry.name}</p>
         </div>
       ))}
     </div>
