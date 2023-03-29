@@ -10,7 +10,7 @@ import './index.css';
 
 // Create an ApolloClient instance that connects to our GraphQL server
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri: 'http://tyk-gateway:8080/country/',
   cache: new InMemoryCache(),
 });
 
