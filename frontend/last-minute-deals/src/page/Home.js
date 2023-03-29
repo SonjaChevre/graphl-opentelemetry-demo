@@ -7,8 +7,9 @@ function Home() {
 
   return (
     <div>
-     <b>Hello</b>
-     <p><Link to="/Pictures"> Pictures </Link></p>
+     <b>Last minute deals 🏝️</b>
+     <p><Link to="/Deals">Deals</Link></p>
+     <p><Link to="/Pictures">Pictures</Link> - take a look at the best locations</p>
     </div>
   );
 }

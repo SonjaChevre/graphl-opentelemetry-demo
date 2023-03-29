@@ -9,8 +9,9 @@ Demo application for GraphQL and OpenTelemetry
 127.0.0.1       graphql-server
 ```
 
-## Build container for Tyk POC version
+## Build Tyk POC version
 
+Tyk version TBD add link to branch
 Tag docker container as tyk-opentelemetry
 
 ```

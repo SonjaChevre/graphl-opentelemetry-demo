@@ -23,10 +23,19 @@ const schema = buildSchema(`
     photos: [Photo]
   }
 
+  type Deal {
+    price: Float
+    days: Int
+    country: Country
+  }
+
   type Query {
     getCountries: [Country]
     getCountry(code: ID!): Country
+    getDeal(code: ID!): Deal
+    getRandomDeal: Deal
   }
+
 `);
 
 // Define the root resolver
@@ -106,7 +115,47 @@ const root = {
       }
       return null;
     }
-  }
+  },
+
+  getDeal: async ({ code }) => {
+    try {
+      const country = await root.getCountry({ code }); // call getCountry resolver
+      let photos = [];
+      try {
+        const photoResponse = await axios.get(`http://host.docker.internal:3001/pictures/${code}`);
+        photos = photoResponse.data.photos.map(photo => ({
+          id: photo.id,
+          country: photo.country,
+          src: photo.src,
+          title: photo.title
+        }));
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.warn(`Warning: No photos found for country code '${code}'`);
+        } else {
+          throw error;
+        }
+      }
+  
+      const price = Math.floor(Math.random() * (4000 - 10 + 1) + 10);
+      const days = Math.floor(Math.random() * (14 - 2 + 1) + 2);
+  
+      return {
+        price,
+        days,
+        country,
+        photos
+      };
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+      if (error.response) {
+        console.error(`GraphQL Error: ${error.response.data.errors[0].message}`);
+      }
+      return null;
+    }
+}
+
+  
   
 };
 
