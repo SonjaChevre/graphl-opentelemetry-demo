@@ -61,6 +61,7 @@ services:
       - tyk-redis
       - tyk-mongo
       - otelcol
+
   tyk-gateway:
     image: tyk-otel
     ports:
@@ -81,12 +82,16 @@ services:
       - tyk-redis
       - otelcol
       - tyk-dashboard
+
+
   tyk-redis:
     image: redis:6.0.4
     ports:
       - "6380:6379"
     volumes:
     - ./tyk/volumes/redis:/data
+
+
   tyk-mongo:
     image: mongo:4.0
     command: ["mongod", "--smallfiles"]
@@ -138,4 +143,26 @@ services:
       - "4317"                           # OTLP gRPC default port
     environment:
       - COLLECTOR_OTLP_ENABLED=true
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_SERVER_URL=http://prometheus:9090
+    logging: *logging
+
+  # Prometheus
+  prometheus:
+    image: quay.io/prometheus/prometheus:v2.34.0
+    container_name: prometheus
+    command:
+      - --web.console.templates=/etc/prometheus/consoles
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --storage.tsdb.retention.time=1h
+      - --config.file=/etc/prometheus/prometheus-config.yaml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+      - --web.route-prefix=/
+    volumes:
+      - ./prometheus/prometheus-config.yaml:/etc/prometheus/prometheus-config.yaml
+    ports:
+      - "${PROMETHEUS_SERVICE_PORT}:${PROMETHEUS_SERVICE_PORT}"
+    depends_on:
+      - otelcol
     logging: *logging
