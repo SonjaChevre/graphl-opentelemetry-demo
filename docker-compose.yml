@@ -32,16 +32,12 @@ services:
     ports:
       - "4000:4000"
 
-
   frontend:
     image: nodejs-react
     build: ./frontend/last-minute-deals
     ports:
       - "3000:3000"
 
-  # ********************
-  # Tyk services
-  # ********************
 
  # ******************
   # Tyk Services
@@ -99,7 +95,6 @@ services:
       - 27017:27017
     volumes:
       - ./tyk/volumes/mongo:/data/db
-
 
 
   # ********************
@@ -166,3 +161,10 @@ services:
     depends_on:
       - otelcol
     logging: *logging
+
+  k6:
+    image: grafana/k6:latest
+    ports:
+      - "6565:6565"
+    volumes:
+      - ./k6/:/scripts
