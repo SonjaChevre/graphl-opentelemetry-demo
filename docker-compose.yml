@@ -20,21 +20,15 @@ services:
   # Demo services
   # ********************
 
-  photos:
-    image: nodejs-photos
-    build: ./photos 
+  weather:
+    image: nodejs-weather
+    build: ./weather 
     ports:
       - "3001:3001"
 
-  graphql:
-    image: nodejs-graphql
-    build: ./graphql-server 
-    ports:
-      - "4000:4000"
-
-  frontend:
-    image: nodejs-react
-    build: ./frontend/last-minute-deals
+  graphql-query:
+    image: nodejs-query
+    build: ./frontend/graphql-query
     ports:
       - "3000:3000"
 
