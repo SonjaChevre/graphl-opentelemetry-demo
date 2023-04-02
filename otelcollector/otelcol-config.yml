@@ -20,10 +20,16 @@ exporters:
 
 processors:
   batch:
+  spanmetrics:
+    metrics_exporter: prometheus
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [spanmetrics, batch]
       exporters: [otlp]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]

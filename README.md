@@ -27,17 +27,23 @@ Start the demo:
 docker compose up
 ```
 
-Jaeger UI: http://localhost:16686/
-GraphQL server running on http://localhost:4000/graphql
-Photo REST API runs on http://localhost:3001/, example: http://localhost:3001/pictures/UK
-The react runs on: http://localhost:3000/
-Tyk Gateway runs on: http://localhost:8080/
-Tyk Dashboard runs on: http://localhost:3010/
+Observability stack:
+- Jaeger: http://localhost:16686/
+- Prometheus: http://localhost:9090/
 
+API stack:
+- Tyk Gateway runs on: http://localhost:8080/
+- Tyk Dashboard runs on: http://localhost:3010/
 
-## Todo
+Application: 
+- GraphQL server running on http://localhost:4000/graphql
+- Photo REST API runs on http://localhost:3001/, example: http://localhost:3001/pictures/UK
+- The react runs on: http://localhost:3000/
 
-* Add prometheus and grafana for monitoring
-* Add Tyk
+## Run load test with K6
+
+```
+docker compose run  k6 run /scripts/load.js
+```
 
 
