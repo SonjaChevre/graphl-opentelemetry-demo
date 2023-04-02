@@ -9,43 +9,23 @@ export let options = {
 export default function () {
   // Define the GraphQL queries to send
   let queries = [
-    `query {
-      getCountries {
-        name
+    ` {
+      countries {
         code
-        capital
-      }
-    }`,
-    `query {
-      getCountry(code: "US") {
         name
+      }
+    }`,
+    ` {
+      continents {
         code
-        capital
-        photos {
-          title
-          src
-        }
+        name
       }
     }`,
     `query {
-      getDeal(code: "GB") {
-        price
-        days
-        country {
-          name
+      {
+        languages {
           code
-        }
-      }
-    }`,
-    `query {
-      getRandomDeal {
-        price
-        days
-        country {
           name
-          code
-          capital
-          currency
         }
       }
     }`
@@ -56,7 +36,7 @@ export default function () {
 
   // Send the GraphQL query to the endpoint
   let response = http.post(
-    'http://tyk-gateway:8080/country/',
+    'http://tyk-gateway:8080/countries/',
     JSON.stringify({ query: query }),
     {
       headers: {
