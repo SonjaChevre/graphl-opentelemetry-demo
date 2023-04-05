@@ -7,38 +7,41 @@ import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const QUERIES = [
   {
-    name: 'Countries',
+    name: 'getCountries',
     query: gql`
-      {
-        countries {
-          code
-          name
-        }
+    {
+      getCountries {
+        code
+        name
       }
+    }
     `
   },
   {
-    name: 'Continents',
+    name: 'getCountry (code: "CH")',
     query: gql`
-      {
-        continents {
-          code
-          name
-        }
+    { country (code: "CH") {
+      code
+      name
+      capital
+      weather {
+        temperature
       }
-    `
-  },
-  {
-    name: 'Languages',
-    query: gql`
-      {
-        languages {
-          code
-          name
+    }`
+    }
+    ,
+    {
+      name: 'getCountry (code: "IT")',
+      query: gql`
+      { country (code: "IT") {
+        code
+        name
+        capital
+        weather {
+          temperature
         }
+      }`
       }
-    `
-  }
 ];
 
 function QueryButton({ queryIndex, activeIndex, onClick }) {

@@ -32,6 +32,12 @@ services:
     ports:
       - "3000:3000"
 
+  graphql-query2:
+    image: nodejs-query-2
+    build: ./frontend/graphql-query-2
+    ports:
+      - "3002:3000"
+
   graphql-server:
     image: graphql-server
     build: ./graphql-server

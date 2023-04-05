@@ -18,6 +18,13 @@ Tag docker container as tyk-opentelemetry
 docker build --platform linux/amd64 . -t tyk-otel
 ```
 
+## Add Tyk Dashboard license
+
+in .env:
+```
+TYK_DASHBOARD_LICENSE=""
+```
+
 
 ## Run it
 
@@ -37,7 +44,7 @@ API stack:
 
 Application: 
 - GraphQL server running on http://localhost:4000/graphql
-- Photo REST API runs on http://localhost:3001/, example: http://localhost:3001/pictures/UK
+- Weather REST API runs on http://localhost:3001/, example: http://localhost:3001/weather/uk
 - The react runs on: http://localhost:3000/
 
 ## Run load test with K6

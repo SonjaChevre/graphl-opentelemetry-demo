@@ -2,6 +2,7 @@ require('./tracer');
 const express = require('express');
 const app = express();
 const path = require('path');
+  
 
 // Define the API endpoint
 app.get('/weather/:countryCode', (req, res) => {
@@ -9,6 +10,10 @@ app.get('/weather/:countryCode', (req, res) => {
 
   if (['IT', 'FR'].includes(countryCode)) {
     return res.status(400).json({ error: `No weather information available for country code ${countryCode}` });
+  }
+
+  if (['DE'].includes(countryCode)) {
+    
   }
 
   // Generate random temperature between -5 and 32
