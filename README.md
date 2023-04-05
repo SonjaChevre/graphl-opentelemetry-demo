@@ -38,13 +38,17 @@ Observability stack:
 - Prometheus: http://localhost:9090/
 
 API stack:
-- Tyk Gateway runs on: http://localhost:8080/
+- Tyk Gateway runs on: http://localhost:8080/hello
+    - GraphQL proxy: http://tyk-gateway:8080/graphql-express/playground
+    - UDG: http://tyk-gateway:8080/countries/playground
 - Tyk Dashboard runs on: http://localhost:3010/
 
 Application: 
 - GraphQL server running on http://localhost:4000/graphql
 - Weather REST API runs on http://localhost:3001/, example: http://localhost:3001/weather/uk
-- The react runs on: http://localhost:3000/
+- The react runs on: 
+    - http://localhost:3000/ (for UDG queries)
+    - http://localhost:3002/ (for GraphQL proxy for queries)
 
 ## Optional: Run load test with K6
 

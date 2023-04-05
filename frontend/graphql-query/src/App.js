@@ -9,39 +9,44 @@ const QUERIES = [
   {
     name: 'getCountries',
     query: gql`
-    {
-      getCountries {
-        code
-        name
+      {
+        countries {
+          code
+          name
+        }
       }
-    }
     `
   },
   {
     name: 'getCountry (code: "CH")',
     query: gql`
-    { country (code: "CH") {
-      code
-      name
-      capital
-      weather {
-        temperature
-      }
-    }`
-    }
-    ,
-    {
-      name: 'getCountry (code: "IT")',
-      query: gql`
-      { country (code: "IT") {
-        code
-        name
-        capital
-        weather {
-          temperature
+      {
+        country (code: "CH") {
+          code
+          name
+          capital
+          weather {
+            temperature
+          }
         }
-      }`
       }
+    `
+  },
+  {
+    name: 'getCountry (code: "IT")',
+    query: gql`
+      {
+        country (code: "IT") {
+          code
+          name
+          capital
+          weather {
+            temperature
+          }
+        }
+      }
+    `
+  }
 ];
 
 function QueryButton({ queryIndex, activeIndex, onClick }) {
