@@ -6,12 +6,11 @@ Demo application for GraphQL and OpenTelemetry
 
 ```
 127.0.0.1       tyk-gateway
-127.0.0.1       graphql-server
 ```
 
 ## Build Tyk POC version
 
-Tyk version TBD add link to branch
+Tyk version https://github.com/TykTechnologies/tyk/tree/feat/TT-8240/PoC-OTel-GraphQL-in-Tyk
 Tag docker container as tyk-opentelemetry
 
 ```
@@ -47,7 +46,7 @@ Application:
 - Weather REST API runs on http://localhost:3001/, example: http://localhost:3001/weather/uk
 - The react runs on: http://localhost:3000/
 
-## Run load test with K6
+## Optional: Run load test with K6
 
 ```
 docker compose run  k6 run /scripts/load.js
