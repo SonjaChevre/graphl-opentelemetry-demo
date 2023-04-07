@@ -197,7 +197,70 @@ const root = {
       console.error(error);
       throw new Error('Failed to fetch continents data');
     }
+  },
+
+  country: async ({ code }) => {
+    try {
+      // Get country data from TrevorBlades API
+      const response = await axios.post('https://countries.trevorblades.com/graphql', {
+        query: `
+          query {
+            country(code: "${code}") {
+              capital
+              code
+              continent {
+                code
+                name
+              }
+              currencies
+              emoji
+              emojiU
+              languages {
+                code
+                name
+                native
+                rtl
+              }
+              name
+              native
+              phone
+              phones
+              states {
+                code
+                name
+              }
+            }
+          }
+        `
+      });
+  
+      // Retrieve photos from Pexels API
+      const pexelsResponse = await axios.get(`https://api.pexels.com/v1/search?query=${response.data.data.country.name}&per_page=5&page=1`, {
+        headers: {
+          Authorization: "3rOF8TRDTo1GrBwhN9HHqAxxCPOhPnEtIfX45liqNY6niTumwwEgju4M"
+        }
+      });
+  
+      const photos = pexelsResponse.data.photos;
+  
+      // Retrieve weather from internal API
+      const weatherResponse = await axios.get(`http://localhost:3001/weather/${code}`);
+      const weather = weatherResponse.data;
+  
+      // Combine all data into a single object and return
+      const countryData = {
+        ...response.data.data.country,
+        photos,
+        weather
+      };
+  
+      return countryData;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to fetch country data');
+    }
   }
+  
   
   
 };

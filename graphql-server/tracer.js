@@ -6,7 +6,6 @@ const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
 const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
 const { Resource } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
-const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node'); 
 
 
 // Receiving service
@@ -24,7 +23,7 @@ let activeContext = propagation.extract(context.active(), input);
 
 const sdk = new opentelemetry.NodeSDK({
   traceExporter: new OTLPTraceExporter({
-    url: "http://host.docker.internal:4318/v1/traces",
+    url: "http://localhost:4318/v1/traces",
     // optional - collection of custom headers to be sent with each request, empty by default
     headers: {},
   }),
