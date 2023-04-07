@@ -7,7 +7,7 @@ import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const QUERIES = [
   {
-    name: 'Countries',
+    name: 'getCountries',
     query: gql`
       {
         countries {
@@ -18,23 +18,31 @@ const QUERIES = [
     `
   },
   {
-    name: 'Continents',
+    name: 'getCountry (code: "CH")',
     query: gql`
       {
-        continents {
+        country (code: "CH") {
           code
           name
+          capital
+          weather {
+            temperature
+          }
         }
       }
     `
   },
   {
-    name: 'Languages',
+    name: 'getCountry (code: "IT")',
     query: gql`
       {
-        languages {
+        country (code: "IT") {
           code
           name
+          capital
+          weather {
+            temperature
+          }
         }
       }
     `

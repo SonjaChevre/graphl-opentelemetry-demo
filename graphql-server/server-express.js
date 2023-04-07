@@ -8,114 +8,202 @@ const cors = require('cors');
 
 // Define the schema
 const schema = buildSchema(`
+type Query {
+  continent(code: ID!): Continent!
+  continents(filter: ContinentFilterInput = {}): [Continent!]!
+  countries(filter: CountryFilterInput = {}): [Country!]!
+  country(code: ID!): Country!
+  language(code: ID!): Language!
+  languages(filter: LanguageFilterInput = {}): [Language!]!
+}
 
+type Mutation {
+  default: String
+}
 
-  type Country {
-    name: String
-    code: ID!
-    capital: String
-    currency: String
-  }
+type Src { original: String
+  large2x: String
+  large: String
+  medium: String
+  small: String
+  portrait: String
+  landscape: String
+  tiny: String 
+}
 
-  type Deal {
-    price: Float
-    days: Int
-    country: Country
-  }
+type Photo { 
+  id: Int
+  width: Int
+  height: Int
+  url: String
+  photographer: String
+  photographer_url: String
+  photographer_id: Int
+  avg_color: String
+  liked: Boolean
+  alt: String
+  src: Src 
+}
 
-  type Query {
-    getCountries: [Country]
-    getCountry(code: ID!): Country
-    getDeal(code: ID!): Deal
-    getRandomDeal: Deal
-  }
+type Continent {
+  code: ID!
+  countries: [Country!]!
+  name: String!
+}
+
+input ContinentFilterInput {
+  code: StringQueryOperatorInput
+}
+
+type Country {
+  capital: String
+  code: ID!
+  continent: Continent!
+  currencies: [String!]!
+  currency: String
+  emoji: String!
+  emojiU: String!
+  languages: [Language!]!
+  name: String!
+  native: String!
+  phone: String!
+  phones: [String!]!
+  states: [State!]!
+  photos: [Photo]
+  weather: Weather
+}
+
+input CountryFilterInput {
+  code: StringQueryOperatorInput
+  continent: StringQueryOperatorInput
+  currency: StringQueryOperatorInput
+}
+
+type Language {
+  code: ID!
+  name: String!
+  native: String!
+  rtl: Boolean!
+}
+
+input LanguageFilterInput {
+  code: StringQueryOperatorInput
+}
+
+type State {
+  code: String
+  country: Country!
+  name: String!
+}
+
+input StringQueryOperatorInput {
+  eq: String
+  in: [String!]
+  ne: String
+  nin: [String!]
+  regex: String
+}
+
+type Weather {
+  temperature: Int!
+  description: String!
+}
 
 `);
 
-// Define the root resolver
 const root = {
-  getCountries: async () => {
-    const response = await axios.post('https://countries.trevorblades.com/graphql', {
-      query: `
-        query {
-          countries {
-            name
-            code
-            capital
-            currency
-          }
-        }
-      `
-    });
-
-    const countries = response.data.data.countries;
-
-    return countries.map(async country => ({
-      name: country.name,
-      code: country.code,
-      currency: country.currency,
-      capital: country.capital
-    }));
-  },
-  getCountry: async ({ code }) => {
+  continent: async ({ code }) => {
     try {
       const response = await axios.post('https://countries.trevorblades.com/graphql', {
         query: `
-          query($code: ID!) {
-            country(code: $code) {
-              name
+          query {
+            continent(code: "${code}") {
               code
-              capital
-              currency
+              name
+              countries {
+                code
+                name
+                native
+                capital
+                currency
+                languages {
+                  code
+                  name
+                  native
+                }
+              }
             }
           }
-        `,
-        variables: {
-          code
-        }
+        `
       });
-  
-      const country = response.data.data.country;
-  
-      return {
-        name: country.name,
-        code: country.code,
-        capital: country.capital,
-        currency: country.currency
-      };
+
+      return response.data.data.continent;
     } catch (error) {
-      console.error(`Error: ${error.message}`);
-      if (error.response) {
-        console.error(`GraphQL Error: ${error.response.data.errors[0].message}`);
-      }
-      return null;
+      console.error(error);
+      throw new Error('Failed to fetch continent data');
     }
   },
 
-  getDeal: async ({ code }) => {
+  continents: async ({ filter }) => {
     try {
-      const country = await root.getCountry({ code }); // call getCountry resolver
+      let query = `
+        query {
+          continents {
+            code
+            name
+            countries {
+              code
+              name
+              native
+              capital
+              currency
+              languages {
+                code
+                name
+                native
+              }
+            }
+          }
+        }
+      `;
   
-      const price = Math.floor(Math.random() * (4000 - 10 + 1) + 10);
-      const days = Math.floor(Math.random() * (14 - 2 + 1) + 2);
-  
-      return {
-        price,
-        days,
-        country
-      };
-    } catch (error) {
-      console.error(`Error: ${error.message}`);
-      if (error.response) {
-        console.error(`GraphQL Error: ${error.response.data.errors[0].message}`);
+      if (filter && filter.code) {
+        query = `
+          query {
+            continent(code: "${filter.code.eq}") {
+              code
+              name
+              countries {
+                code
+                name
+                native
+                capital
+                currency
+                languages {
+                  code
+                  name
+                  native
+                }
+              }
+            }
+          }
+        `;
       }
-      return null;
+  
+      const response = await axios.post('https://countries.trevorblades.com/graphql', { query });
+  
+      return response.data.data.continents;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to fetch continents data');
     }
-}
-
+  }
   
   
 };
+
+  
+  
 
 // Create an Express app
 const app = express();
