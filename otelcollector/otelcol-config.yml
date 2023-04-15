@@ -17,10 +17,18 @@ exporters:
       insecure: true
   prometheus:
     endpoint: "otelcol:9464"
+  otlp/newrelic:
+    endpoint: https://otlp.eu01.nr-data.net:4317
+    headers:
+      api-key: eu01xxb7ba8b38853395ed9b83cd59f90a64NRAL
 
 processors:
   batch:
   spanmetrics:
+    dimensions:
+      - name: graphql.source
+      - name: graphql.field.name
+      - name: graphql.field.path
     metrics_exporter: prometheus
 
 service:
@@ -28,8 +36,9 @@ service:
     traces:
       receivers: [otlp]
       processors: [spanmetrics, batch]
-      exporters: [otlp]
+      exporters: [otlp, otlp/newrelic]
     metrics:
       receivers: [otlp]
       processors: [batch]
       exporters: [prometheus]
+
