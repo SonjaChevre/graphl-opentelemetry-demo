@@ -17,10 +17,6 @@ exporters:
       insecure: true
   prometheus:
     endpoint: "otelcol:9464"
-  otlp/newrelic:
-    endpoint: https://otlp.eu01.nr-data.net:4317
-    headers:
-      api-key: eu01xxb7ba8b38853395ed9b83cd59f90a64NRAL
 
 processors:
   batch:
@@ -36,7 +32,7 @@ service:
     traces:
       receivers: [otlp]
       processors: [spanmetrics, batch]
-      exporters: [otlp, otlp/newrelic]
+      exporters: [otlp]
     metrics:
       receivers: [otlp]
       processors: [batch]
